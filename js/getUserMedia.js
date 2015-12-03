@@ -105,10 +105,9 @@ function setupAudioNodes(stream) {
             , len = input.length
             , total = i = 0
             , rms;
-        while ( i < len ) total += Math.abs( input[i++] ) {
+        while ( i < len ) total += Math.abs( input[i++] );
         rms = Math.sqrt( total / len );
         $('#meter').style.width = ( rms * 100 ) + '%';
-        }
     }
 
 }
