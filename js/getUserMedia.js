@@ -22,7 +22,7 @@ window.AudioContext = (function(){
 var audioContext;
 var analyserNode;
 var javascriptNode;
-var sampleSize = 1024;  // number of samples to collect before analyzing
+var sampleSize = 2048;  // number of samples to collect before analyzing
                         // decreasing this gives a faster sonogram, increasing it slows it down
 var amplitudeArray;     // array to hold frequency data
 var audioStream;
@@ -96,6 +96,20 @@ function setupAudioNodes(stream) {
     sourceNode.connect(analyserNode);
     analyserNode.connect(javascriptNode);
     javascriptNode.connect(audioContext.destination);
+
+
+    // loop through PCM data and calculate average
+    // volume for a given 2048 sample buffer
+    javascriptNode.onaudioprocess = function(evt){
+        var input = evt.inputBuffer.getChannelData(0)
+            , len = input.length
+            , total = i = 0
+            , rms
+        while ( i < len ) total += Math.abs( input[i++] )
+        rms = Math.sqrt( total / len )
+        $('#meter').style.width = ( rms * 100 ) + '%'
+    }
+
 }
 
 function onError(e) {
