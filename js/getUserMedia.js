@@ -58,6 +58,19 @@ $(document).ready(function() {
         } catch (e) {
             alert('webkitGetUserMedia threw exception :' + e);
         }
+
+        // loop through PCM data and calculate average
+        // volume for a given 2048 sample buffer
+        audioContext.createScriptProcessor(sampleSize, 1, 1).onaudioprocess = function(evt){
+            var input = evt.inputBuffer.getChannelData(0)
+                , len = input.length
+                , total = i = 0
+                , rms;
+            while ( i < len ) total += Math.abs( input[i++] );
+            rms = Math.sqrt( total / len );
+            $('#meter').style.width = ( rms * 100 ) + '%';
+        }
+
     });
 
     // Stop the audio processing
@@ -96,20 +109,6 @@ function setupAudioNodes(stream) {
     sourceNode.connect(analyserNode);
     analyserNode.connect(javascriptNode);
     javascriptNode.connect(audioContext.destination);
-
-
-    // loop through PCM data and calculate average
-    // volume for a given 2048 sample buffer
-    javascriptNode.onaudioprocess = function(evt){
-        var input = evt.inputBuffer.getChannelData(0)
-            , len = input.length
-            , total = i = 0
-            , rms;
-        while ( i < len ) total += Math.abs( input[i++] );
-        rms = Math.sqrt( total / len );
-        $('#meter').style.width = ( rms * 100 ) + '%';
-    }
-
 }
 
 function onError(e) {
