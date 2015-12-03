@@ -15,7 +15,7 @@ window.requestAnimFrame = (function(){
 })();
 
 window.AudioContext = (function(){
-    return  window.webkitAudioContext || window.AudioContext || window.mozAudioContext;
+    return window.AudioContext || window.mozAudioContext;
 })();
 
 // Global Variables for Audio
@@ -104,10 +104,11 @@ function setupAudioNodes(stream) {
         var input = evt.inputBuffer.getChannelData(0)
             , len = input.length
             , total = i = 0
-            , rms
-        while ( i < len ) total += Math.abs( input[i++] )
-        rms = Math.sqrt( total / len )
-        $('#meter').style.width = ( rms * 100 ) + '%'
+            , rms;
+        while ( i < len ) total += Math.abs( input[i++] ) {
+        rms = Math.sqrt( total / len );
+        $('#meter').style.width = ( rms * 100 ) + '%';
+        }
     }
 
 }
